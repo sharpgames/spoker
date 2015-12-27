@@ -1,0 +1,208 @@
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SharpPoker</title>
+	<link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/5.9.3/css/aui.css" media="all">
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	<script src="//aui-cdn.atlassian.com/aui-adg/5.9.3/js/aui.js"></script>
+  <script src="//aui-cdn.atlassian.com/aui-adg/5.9.3/js/aui-experimental.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+			<h1>SharpPoker{{> modal}} </h1>
+
+      <label class="hide-completed">
+        <input type="checkbox" checked="{{hideCompleted}}" />
+        Show Sold-Out Items
+      </label>
+			{{> loginButtons}} Money: <i class="fa fa-jpy"></i>{{money}}
+			{{#if currentUser}}
+			<form class="new-task">
+				<input type="text" name="text" placeholder="Type to change your comment" />
+			</form>
+			{{/if}}
+    </header>
+    {{>errors}}
+    <div class="sizemax">
+    <ul class="playingCards simpleCards table">
+			<h2>Hands <aui-badge>{{handCount}}</aui-badge></h2>
+      {{# if isnothandEqual5}}
+			<span><input type="submit" class="aui-button aui-button-primary new-card" value="引く"></span>
+      {{/if}}
+      {{# if ishandEqual5}}
+			<span><input type="submit" class="aui-button aui-button-primary publish-cards" value="送信"></span>
+			{{/if}}
+      <div class="hand-lineup">
+      {{#each cards}}
+        {{> card}}
+      {{/each}}
+      </div>
+    </ul>
+    </div>
+
+		{{#if currentUser}}
+    <div class="sizemax">
+    <ul class="playingCards simpleCards table">
+			<h2>Market <aui-badge>{{incompleteCount}}</aui-badge></h2>
+      Average: <i class="fa fa-jpy"></i>{{average}}
+      <div class="hand-lineup">
+      {{#each tasks}}
+        {{> task}}
+      {{/each}}
+      </div>
+
+    </ul>
+    </div>
+    <h2>Results</h2>
+    <table class="aui">
+			<thead>
+				<tr>
+					<th id="user">User</th>
+					<th id="hand">Hand</th>
+					<th id="score">Score</th>
+				</tr>
+      </thead>
+		<tbody>
+      {{#each results}}
+        {{> result}}
+      {{/each}}
+		</tbody>
+		</table>
+    <h2>Rankings</h2>
+    <ol id="popular-post">
+      {{#each userData}}
+        {{> user}}
+      {{/each}}
+    </ol>
+		{{> highchartsHelper chartId="test" chartWidth="100%" charHeight="100%" chartObject=topGenresChart}}
+		{{/if}}
+    <footer>
+			<div align="right" >
+			(c) 2015 Sharpgames
+			</div>
+    </footer>
+  </div>
+</body>
+
+<template name="card">
+  <span>
+  <form class="card-sell">
+    <li class="card rank-{{ rank }} {{ suit }}">
+      <span class="rank">{{ rank }}</span>
+      <span class="suit"></span>
+
+    </li>
+      <input type="number" name="price" placeholder="100" />
+  </form>
+  </span>
+</template>
+
+<template name="task">
+  <span>
+  <form class="card-sell">
+    <li class="card rank-{{ rank }} {{ suit }}">
+      <span class="rank">{{ rank }}</span>
+      <span class="suit"></span>
+    </li>
+		<span class="text"><strong>{{username}}</strong> - <i class="fa fa-jpy"></i>{{price}}</span>
+    {{#if isnotOwner}}
+      <button class="toggle-private">
+        Buy
+      </button>
+    {{/if}}
+  </form>
+  </span>
+</template>
+
+<template name="result">
+				<tr>
+					<td>{{username}}</td>
+					<td>{{hand}}</td>
+					<td><i class="fa fa-jpy"></i>{{score}}</td>
+				</tr>
+</template>
+
+<template name="user">
+  <li class="{{#if isOwner}}private{{/if}}">
+		<span class="text"><strong>{{username}}</strong> - <i class="fa fa-jpy"></i>{{profile.money}} {{profile.text}}</span>
+  </li>
+</template>
+
+
+<template name="errors">
+  <div class="errors">
+		    {{#each errors}}
+				      {{> error}}
+							    {{/each}}
+	</div>
+</template>
+
+<template name="error">
+  <div class="alert alert-error" role="alert">
+		<i class="fa fa-exclamation-circle"></i>
+		    <button type="button" class="delete" data-dismiss="alert">&times;</button>
+				    {{message}}
+						  </div>
+</template>
+
+<template name="modal">
+<!-- Create a trigger which will be used by the JavaScript -->
+<button id="dialog-show-button" class="aui-button aui-button-primary"><i class="fa fa-question"></i> Help</button>
+​
+<!-- Render the dialog -->
+<section role="dialog" id="demo-dialog" class="aui-layer aui-dialog2 aui-dialog2-medium" aria-hidden="true">
+    <!-- Dialog header -->
+    <header class="aui-dialog2-header">
+        <!-- The dialog's title -->
+        <h2 class="aui-dialog2-header-main">SharpPoker Help</h2>
+        <!-- Close icon -->
+        <a class="aui-dialog2-header-close">
+            <span class="aui-icon aui-icon-small aui-iconfont-close-dialog">Close</span>
+        </a>
+    </header>
+    <!-- Main dialog content -->
+    <div class="aui-dialog2-content">
+{{#markdown}}
+## はじめに
+SharpPokerは、Sharpgamesが開発した新しいソーシャル・ポーカーゲームです。Javascriptのフレームワークの進化によるサーバー・クライアント間のリアクティブなDOMの同期がSharpgamesに新たなる風を吹き込みました。
+
+## 遊び方
+まずは、適当なユーザー名とパスワードでサインインしましょう。
+
+Handsセクションに、あなたの手持ちのカードが表示されます。あなたは所持しているカードが5枚になるまで、カードを山札から引くことができます。その際、¥100かかります。あるいは、Marketセクションにあるカードを所定の金額を支払って購入することができます。
+
+あるいは、手札を売りに出すことができます。金額を手札の下のフォームに入力してリターンすると、その金額でMarketに売りに出されます。他のユーザーがそのカードを購入した際、同額をそのまま手に入れることができます。このマーケットは自由市場であり、中抜きされるマージンはありません。
+
+所持しているカードは、5枚揃った時点で送信することができます。送信するとResultセクションに結果が表示され、ポーカーの役や手札の良し悪しに応じて収入を得ることができます。
+
+あなたの目標は、ポーカーで巨万の富を築き、Rankingで上位になることです。
+
+## 注意
+¥0を切った場合1回だけ借金することができますが、それ以上は借金することができません。
+
+{{/markdown}}
+    </div>
+    <!-- Dialog footer -->
+    <footer class="aui-dialog2-footer">
+        <!-- Actions to render on the right of the footer -->
+        <div class="aui-dialog2-footer-actions">
+            <button id="dialog-close-button" class="aui-button aui-button-link">Close</button>
+        </div>
+        <!-- Hint text is rendered on the left of the footer -->
+        <div class="aui-dialog2-footer-hint">(c) 2015 Sharpgames</div>
+    </footer>
+</section>
+<script>
+        AJS.$("#dialog-show-button").click(function() {
+				            AJS.dialog2("#demo-dialog").show();
+										        });
+
+														        // Hides the dialog
+																		        AJS.$("#dialog-close-button").click(function(e) {
+																						            e.preventDefault();
+																												            AJS.dialog2("#demo-dialog").hide();
+																																		        });
+</script>
+</template>
