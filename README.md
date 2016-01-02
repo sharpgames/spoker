@@ -15,7 +15,7 @@ RDBMS such as mysql, Postgresql are sometimes very useful, but it's not suitable
 It's very hard for me to reconstructure UI such as buttons, budges and dialogs. Some bootstraps help us to build a website. I choose AUI because AUI supports CDN and it has a lot of useful components.
 
 * highchart.js
-Interactive and compatible chart's visualizing tool enhances my webapp. To visualize big data supports our conprehension.
+Interactive and compatible chart's visualizing tool enhances my webapp. To visualize big data supports our conprehension. Highcharts.js can build graph easily.
 
 ### Demo and Specification ###
 [Click](http://sharppoker.meteor.com/)
@@ -28,7 +28,7 @@ Please see a help section at that page.
 Please get meteor (https://www.meteor.com/) and it needs mongodb in advance.
 
 ```bash
-sudo pacman -S mongodb
+sudo pacman -S mongodb meteor
 ```
 
 Clone this repository and run!
