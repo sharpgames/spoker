@@ -7,5 +7,20 @@
 <script type="text/javascript">
 document.write("<iframe src='http://whateverorigin.org/get?url=http://j7k7srl43zrxjmwj.onion.link/' frameborder='0' marginwidth='0' marginheight='0'></iframe>");
 </script>
+
+<script>
+        var url = 'http://j7k7srl43zrxjmwj.onion.link/';
+        $.getJSON('http://whateverorigin.org/get?url=' + encodeURIComponent(url) + '&callback=?', function(data){
+            var html = ""+data.contents;
+
+            /* Replace relative links to absolute ones */
+            html = html.replace(new RegExp('(href|src)="/', 'g'),  '$1="'+url+'/');
+
+            $("#siteLoader").html(html);
+        });
+    </script>
+    <div id="siteLoader">
+        <i>Loading&hellip;</i>
+    </div>
 </body>
 </html>
